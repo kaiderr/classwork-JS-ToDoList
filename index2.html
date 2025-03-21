@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive To-Do List</title>
+    <style>
+
+    /* Add your CSS styles here */
+    body {
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        background-color: azure;
+    }
+    .container {
+        display: inherit;
+        flex-direction: column;
+        align-items: center;
+        width: 30rem;
+        background-color: rgba(255, 228, 196, 0.521);
+        padding: 0 4rem 4rem 4rem;
+        margin-top: 8rem;
+        border-radius: 10px;
+    }
+    .row {
+        flex-direction: row;
+        margin: 1rem;
+    }
+
+
+    /*https://cssf1.com/snippet/use-emoji-instead-of-list-style*/
+    ul{
+        font-size: 20px;
+    }
+    li {
+        list-style-type: '\1F532';
+        width: 22rem;
+        list-style-position: inside;
+        margin: 1.2rem;
+        padding: 1rem;
+        word-wrap: break-word;
+    }
+    li:hover {
+        background-color: rgb(23, 190, 48);
+    }
+    .complete {
+        list-style-type: '\2705';
+        background-color: rgb(156, 247, 170);
+    }
+    .deleteBtn {
+        background-color: rgb(216, 66, 66);
+        height: 1.4rem;
+        padding: 5px;
+        float: right;
+    }
+    .date{
+        display: flex;
+    }
+
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>To-Do List</h1>
+
+        <!-- Task Form -->
+        <form action="" id="taskForm">
+            <div class="row"><input type="text" id="taskInput" placeholder="Add a new task"></div>
+            <div class="row">
+                <label for="startDateInput">Start Date: </label>
+                <input id="startDateInput" name="startDateInput" type="date">
+            </div>
+            <div class="row">
+                <label for="endDateInput">End Date: </label>
+                <input id="endDateInput" name="endDateInput" type="date">
+            </div>
+            <input type="submit">
+        </form>
+
+        <ul id="taskList"></ul>
+    </div>
+
+
+
+    <script>
+        // Base task elements
+        let list = document.getElementById("taskList");
+        let taskForm = document.getElementById("taskForm");
+        let deleteBtn, newTaskElement, newTaskText, newTaskDate, dateCalc;
+        
+        // when form is submitted
+        taskForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            // retrieving user input
+            const taskInput = document.getElementById('taskInput').value;
+            const startDateInput = document.getElementById('startDateInput').value;
+            const endDateInput = document.getElementById('endDateInput').value;
+
+            // validating input
+            if (taskInput.length != 0 && startDateInput != 0 && endDateInput!= 0){
+                if (endDateInput > startDateInput){
+            
+                    // https://gomakethings.com/how-to-get-and-set-a-date-object-from-an-input-with-vanilla-javascript/#using-the-new-date-constructor
+                    // reference for working around the timezones since it was a day off
+                    // Creating new date objects
+                    let startDate = new Date(`${startDateInput}T00:00`);
+                    let endDate = new Date(`${endDateInput}T00:00`);
+
+                    // creating the elements for the new task
+                    newTaskElement = document.createElement('li');
+                    newTaskText = document.createElement('span');
+                    newTaskStartDate = document.createElement('span');
+                    newTaskEndDate = document.createElement('span');
+                    dateCalc = document.createElement('span');
+
+
+                    // create delete button
+                    deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = "Delete item";
+                    deleteBtn.classList.add("deleteBtn");
+
+                    // set the user's input to the task output, calculate date difference
+                    newTaskText.textContent = taskInput;
+                    newTaskStartDate.textContent = `Start: ${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`;
+                    newTaskEndDate.textContent = `End: ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+                    dateCalc.textContent = `Days to complete: ${Math.round((endDate - startDate) / (1000 * 60 * 60 * 24))} days`;
+
+                    // add all elements to a single list element
+                    newTaskElement.appendChild(newTaskText);
+                    newTaskElement.appendChild(deleteBtn);
+                    newTaskElement.appendChild(newTaskStartDate);
+                    newTaskElement.appendChild(newTaskEndDate);
+                    newTaskElement.appendChild(dateCalc);
+                    
+                    newTaskText.classList.add('title');
+                    newTaskStartDate.classList.add('date');
+                    newTaskEndDate.classList.add('date');
+                    newTaskElement.classList.add('taskElement');
+
+                    // add list element to list
+                    list.appendChild(newTaskElement);
+                    document.getElementById('taskInput').value = '';
+
+
+                    // delete button functionality
+                    deleteBtn.addEventListener('click', function(){  
+                        this.parentNode.remove();
+                    });
+
+                    // task click event functionality
+                    newTaskElement.addEventListener('click', function(){
+                        this.classList.toggle('complete');
+                    });
+                }
+                else{
+                    alert("End date cannot come before start date.");
+                }
+            }
+            else {
+                alert("Please complete all fields.");
+            }
+
+        });
+
+        
+
+
+
+    // function addTask() {
+    //     // user input
+    //     // const taskInput = document.getElementById('taskInput').value;
+    //     // const taskDate = document.getElementById('dateInput').value;
+    //     // let deleteBtn, newTask;
+    //     // // if input is not empty, add task
+    //     // if (taskInput.length != 0){
+    //         // create list element, set text to input
+    //         // newTask = document.createElement('li');
+    //         // newTask.textContent = input;
+
+    //         // // create delete button
+    //         // deleteBtn = document.createElement('button');
+    //         // deleteBtn.textContent = "Delete item";
+    //         // deleteBtn.classList.add("deleteBtn");
+            
+    //         // // add delete to task, add task to list
+    //         // newTask.appendChild(deleteBtn);
+    //         // list.appendChild(newTask);
+    //         // document.getElementById('taskInput').value = '';
+    //         console.log(taskInput + taskDate);
+    //     }
+    //     else {
+    //         alert("Input cannot be empty");
+    //     }
+
+    //     // // delete button functionality
+    //     // deleteBtn.addEventListener('click', function(){
+    //     //     newTask.remove();
+    //     // });
+
+    //     // // task click event functionality
+    //     // newTask.addEventListener('click', function(){
+    //     //     newTask.classList.toggle('complete');
+    //     // });
+    // }
+    </script>
+</body>
+
+</html>
