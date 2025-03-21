@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive To-Do List</title>
+    <style>
+
+    /* Add your CSS styles here */
+    body {
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        background-color: azure;
+    }
+    .container {
+        display: inherit;
+        flex-direction: column;
+        align-items: center;
+        width: 30rem;
+        background-color: rgba(255, 228, 196, 0.521);
+        padding: 4rem;
+        margin-top: 8rem;
+        border-radius: 10px;
+    }
+    .addTaskRow {
+        flex-direction: row;
+    }
+
+
+    /*https://cssf1.com/snippet/use-emoji-instead-of-list-style*/
+    ul{
+        font-size: 20px;
+    }
+    li {
+        list-style-type: '\1F532';
+        width: 22rem;
+        list-style-position: inside;
+        margin: 1.2rem;
+        padding: 1rem;
+        word-wrap: break-word;
+    }
+    li:hover {
+        background-color: rgb(23, 190, 48);
+    }
+    .complete {
+        list-style-type: '\2705';
+        background-color: rgb(156, 247, 170);
+    }
+    .taskRow {
+        display: flex;
+        align-items: center;
+    }
+    .deleteBtn {
+        background-color: rgb(216, 66, 66);
+        height: 1.4rem;
+        padding: 5px;
+        float: right;
+    }
+
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>To-Do List</h1>
+
+        <div class="addTaskRow">
+            <input type="text" id="taskInput" placeholder="Add a new task">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
+
+
+    <script>
+    let list = document.getElementById("taskList");
+    function addTask() {
+        // user input
+        const input = document.getElementById('taskInput').value;
+        let deleteBtn, newTask;
+        // if input is not empty, add task
+        if (input.length != 0){
+            // create list element, set text to input
+            newTask = document.createElement('li');
+            newTask.textContent = input;
+
+            // create delete button
+            deleteBtn = document.createElement('button');
+            deleteBtn.textContent = "Delete item";
+            deleteBtn.classList.add("deleteBtn");
+            
+            // add delete to task, add task to list
+            newTask.appendChild(deleteBtn);
+            list.appendChild(newTask);
+            document.getElementById('taskInput').value = '';
+        }
+        else {
+            alert("Input cannot be empty");
+        }
+
+        // delete button functionality
+        deleteBtn.addEventListener('click', function(){
+            newTask.remove();
+        });
+
+        // task click event functionality
+        newTask.addEventListener('click', function(){
+            newTask.classList.toggle('complete');
+        });
+    }
+    </script>
+</body>
+
+</html>
